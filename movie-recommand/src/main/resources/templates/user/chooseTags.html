@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <p>新面孔哦，来选择你喜欢的主题吧</p>
+    <form th:action="@{/user/chooseTag}"  method="post">
+        <div th:each="tag:${tagList}" >
+        <label><input type="checkbox" name="tags" th:value="${tag.name}"/><span th:text="${tag.name}">标签内容</span></label>
+        </div>
+        <input type="submit"/>
+    </form>
+
+</div>
+</body>
+</html>

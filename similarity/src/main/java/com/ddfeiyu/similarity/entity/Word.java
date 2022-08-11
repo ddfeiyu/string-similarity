@@ -17,7 +17,7 @@ public class Word implements Comparable {
      */
     private String pos;
     /**
-     * 权重，用于词向量分析
+     * 【词频】权重，用于词向量分析
      */
     private Float weight;
 

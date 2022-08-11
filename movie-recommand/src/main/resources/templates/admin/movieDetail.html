@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<div id="showInformatiion">
+<img th:src="@{${model.movie.imgUrl}}" alt="电影图片" width="300" height="300"/><br/>
+    电影名称：<span th:text="${model.movie.title}"></span><br/>
+    类别：<span th:text="${model.movie.cataLog.name}"></span><br/>
+    电影详情：<span th:text="${model.movie.detail}"></span><br/>
+    <span>观影地址：<a th:href="@{${model.movie.videoUrl}}" th:text="${model.movie.videoUrl}"></a></span><br/>
+    电影标签：<span  th:text="${model.movie.tags}"></span><br/>
+    <a href="" th:href="@{/admin/addMovie(movieId=${model.movie.id})}">修改</a><br/>
+
+</div>
+</body>
+</html>

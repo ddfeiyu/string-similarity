@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+
+    <link rel="stylesheet" href="/css/application.css"/>
+
+    <style>
+        body {
+            background-image: url("https://cn.bing.com/az/hprichbg/rb/SaunaDolomites_ZH-CN9230743969_1920x1080.jpg");
+            background-size: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="ui container">
+    <div class="git-login-row">
+        <div class="git-login-poster">
+            <a href="/enterprises?from=gitosc-login-ad">
+                <div class="ent-poster login ver-3">
+                    <div class="carousel slide" data-interval="5000" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="item img-1 active">
+                                <img src="/index/ent_poster/banner_login_4_1.png">
+                            </div>
+                            <div class="item img-2">
+                                <img src="/index/ent_poster/banner_login_4_2.png">
+                            </div>
+                            <div class="item img-3">
+                                <img src="/index/ent_poster/banner_login_4_3.png">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="git-login-board">
+            <form accept-charset="UTF-8" action="/user/login" class="left aligned ui form flat segment" id="new_user"
+                  method="post">
+                <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input
+                        name="authenticity_token" type="hidden" value="MCjsFCMWB2RKnWep5Y4fEaz/HcuhKDWUBqOcnFOIcx4=">
+                </div>
+                <header class="git-login-header">
+                    <div class="git-login-title">
+                        <span>登录</span>
+                    </div>
+                    <span class="float-right register">
+<a href="/user/register">注册</a>
+</span>
+                </header>
+                <div class="git-login-form-fields">
+                    <div class="ui message error flash_error flash_error_box"></div>
+                    <input id="redirect_to_url" name="redirect_to_url" type="hidden">
+                    <div class="field" id="git-login">
+                        <input id="user_login" name="name" placeholder="手机／邮箱" size="30" type="text">
+                    </div>
+                    <div class="field">
+                        <input id="user_password" name="password" size="30" type="password">
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            <div class="ui checkbox"><input name="remember" type="hidden" value="0"><input
+                                    id="user_remember_me" name="user[remember_me]" type="checkbox" value="1"
+                                    tabindex="0" class="hidden"><label>记住我</label></div>
+                        </div>
+                        <div class="field" style="text-align: right">
+                            <a href="/password/new" class="forget-password">忘记密码?</a>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <input class="ui fluid orange submit button large" name="commit" type="submit" value="登 录">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

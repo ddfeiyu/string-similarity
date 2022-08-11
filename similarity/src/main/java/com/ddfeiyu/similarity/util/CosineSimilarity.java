@@ -2,6 +2,7 @@ package com.ddfeiyu.similarity.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.ddfeiyu.similarity.entity.Word;
 import com.google.common.collect.Maps;
 
 import java.math.BigDecimal;

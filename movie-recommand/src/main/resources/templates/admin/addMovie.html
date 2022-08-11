@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet"  href="/css/jquery.tagsinput.min.css" />
+    <link rel="stylesheet"  href="/css/jquery.tagsinput.min.css" />
+
+    <style>
+        .hide
+        {
+            display:none;
+        }
+    </style>
+</head>
+<body>
+<div id="movieEditContainer">
+    <form action="" enctype="multipart/form-data" method="post" id="imgFormId">
+        <div id="imgEditContainer">
+            <img src="" th:src="@{${movie.imgUrl}}" id="img0" width="300" height="300" class="hide"/><br/>
+            上传电影图片<input type="file" name="file" id="file0" accept="image/jpeg,image/png,image/gif" />
+            <br/>
+        </div>
+    </form>
+    <form action="/admin/addMovie"  th:object="${movie}" method="post" id="movieEditForm">
+        <input type="hidden" name="id" th:value="${movie.id}" />
+        <input  id= "imgUrl" type="hidden" name="imgUrl"  th:value="${movie.imgUrl}" />
+        <labe>电影名称<input type="text" name="title"  required="required" th:value="${movie.title}"/></labe>
+        <br/>
+        国家：
+        <select name="country"  required="required">
+            <option  th:each="country:${countryList}" th:text="${country.name}" th:value="${country.id}" th:selected="${country.id}==${movie.country.id}">美国</option>
+        </select>
+        <br/>
+
+        类别：
+        <select name="cataLog" required="required" >
+            <option  th:each="catalog:${catalogList}" th:text="${catalog.name}" th:selected="${movie.cataLog.id}==${catalog.id}" th:value="${catalog.id}" ></option>
+        </select>
+
+
+        <br/>
+        <p> 电影简介<textarea name="detail"  rows="7" cols="30"   required="required"  th:text="${movie.detail}?:'' "></textarea></p>
+        <p>观影地方<input  id="video" type="url" name="videoUrl" required="required"  th:value="${movie.videoUrl}" /></p>
+
+        <p>发行日期<input type="date"  name="releaseDate" required="required"  th:value="${movie.releaseDate}"/></p>
+        <!--<div id="EditActorInform">-->
+        <!--<p>-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;演员信息编辑界面&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</p>-->
+        <!--<input type="button" id="addActor" value="新增"/>-->
+        <!--<div id="actorList">-->
+        <!--</div>-->
+        <!--</div>-->
+
+        <p>标签：<input id="movie_tags" type="text"  class="tags" th:value="${movie.tags}"/></p>
+        <input id="movie_tagsHidden" type="hidden" name="tags" th:valuse="${movie.tags}"/>
+        <input type="submit" value="保存" />
+
+    </form>
+
+
+</div>
+<!-- 以下代码，如果不使用JS插件则不需要 -->
+<!-- 由于Bootstrap的JS插件依赖jQuery，so 引入jQuery -->
+<script src="/js/jquery-3.1.1.min.js" ></script>
+<script src="/js/jquery.tagsinput.min.js" ></script>
+<script>
+
+    $(document).ready(function(){
+
+
+        $("#movie_tags").tagsInput({width:"auto",
+            onAddTag:function(tag) {
+        //    alert(tag);
+            },
+        onChange:function () {
+            a=$("#movie_tags").val();
+      //      alert(a);
+            $("#movie_tagsHidden").val(a);
+        }});
+        alert("");
+        if($("#img0").attr("src")){
+            $("#img0").removeClass("hide");
+        }
+        /*
+        * 文件预览功能
+        * */
+        $("#file0").change(function(){
+            /*
+            * 获取文件的url
+            * */
+            //  var objUrl = getObjectURL(this.files[0]) ;
+            /*
+            *上传文件到文件服务器
+            * */
+            var formData=new FormData();
+            formData.append("file",this.files[0]);
+            var objUrl =doUpload(formData);
+            if(objUrl) {
+                $("#img0").attr("src", objUrl);
+                $("#img0").removeClass("hide");
+                $("#imgUrl").val(objUrl);
+            }
+
+//            console.log("objUrl = "+objUrl) ;
+//            if (objUrl)
+//            {
+//                $("#img0").attr("src", objUrl);
+//                $("#img0").removeClass("hide");
+//            }
+
+        }) ;
+
+
+        $("#addActor").on("click",function () {
+
+        });
+////////////////////函数分界线/////////////////////////////////////////////////////////////////
+        //建立一個可存取到file的url
+        function getObjectURL(file)
+        {
+            var url = null ;
+            if (window.createObjectURL!=undefined)
+            { // basic
+                url = window.createObjectURL(file) ;
+            }
+            else if (window.URL!=undefined)
+            {
+                // mozilla(firefox)
+                url = window.URL.createObjectURL(file) ;
+            }
+            else if (window.webkitURL!=undefined) {
+                // webkit or chrome
+                url = window.webkitURL.createObjectURL(file) ;
+            }
+            return url ;
+        }
+        //上传文件到文件服务器
+        function doUpload(formData){
+            var  avatarUrl;
+            $.ajax({
+                url: 'http://localhost:8081/upload',
+                type: 'POST',
+                cache: false,
+                data: formData,
+                async:false,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    avatarUrl = data;
+                    // 保存头像更改到数据库
+//                    alert(avatarUrl)
+                },
+                error: function () {
+                    alert("文件上传出错");
+                }
+            });
+            return avatarUrl;
+        }
+        ///////////////////////////////////////////////////////////
+        function getAddMovieContent() {
+            var  form=$("#movieEditForm")[0];
+            var FormData=new FormData(form);
+            $.ajax({
+                url: "/admin/addMovie",
+                type: 'POST',
+                Data:FormData,
+                success: function (data) {
+                    $("#addMovieContainer").html(data);
+                    //    alert(data);
+                    // 保存头像更改到数据库
+//                    alert(avatarUrl)
+                },
+                error: function () {
+                    alert("文件上传出错");
+                }
+            });
+        }
+
+
+
+
+    });
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

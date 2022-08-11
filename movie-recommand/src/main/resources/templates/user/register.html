@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+
+    <link rel="stylesheet" href="/css/application.css"/>
+    <style>
+        body {
+            background-image: url("https://cn.bing.com/az/hprichbg/rb/SaunaDolomites_ZH-CN9230743969_1920x1080.jpg");
+            background-size: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="ui grid page center aligned">
+    <div class="row git-register-row">
+        <div class="six wide column git-signup-poster">
+            <a href="/enterprises?from=gitosc-signup-up">
+                <div class="ent-poster signup ver-3">
+                    <div class="carousel slide" data-interval="5000" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="item img-1 active">
+                                <img src="/index/ent_poster/banner_login_4_1.png">
+                            </div>
+                            <div class="item img-2">
+                                <img src="/index/ent_poster/banner_login_4_2.png">
+                            </div>
+                            <div class="item img-3">
+                                <img src="/index/ent_poster/banner_login_4_3.png">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="eight wide column git-register-board">
+            <div class="custom form segment ui" id="new_user_form" style="text-align: left">
+                <form accept-charset="UTF-8" action="/user/register" class="register-form" id="new_user" method="post">
+                    <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input
+                            name="authenticity_token" type="hidden"
+                            value="MCjsFCMWB2RKnWep5Y4fEaz/HcuhKDWUBqOcnFOIcx4="></div>
+                    <header class="git-register-header">
+                        <div class="git-register-title">
+                            <i class="fa fa-user-o"></i>
+                            <span>注册</span>
+                        </div>
+                        <span class="float-right login">
+                                <span class="have-account">已有帐号?</span>
+                                        <a href="/user/login">登录</a>
+                                </span>
+                    </header>
+                    <input id="user_type" name="user[type]" type="hidden" value="user">
+                    <input id="user_from" name="user[from]" type="hidden" value="register">
+                    <div class="git-register-form-fields">
+
+                        <div class="field inline">
+                            <label for="username">用户名</label>
+                            <input class="user_email" id="username" name="username" required="required" size="30"
+                                   type="text" value="">
+                            <div class="ui small inline loader"></div>
+                            <div class="check result" id="statu_user_email"></div>
+                            <div class="ui text error message"></div>
+                        </div>
+                        <div class="field inline">
+                            <label for="user_password">登陆密码</label>
+                            <div class="password action input">
+                                <input autocomplete="new-password"
+                                       data-password-regx="^(?=.*[0-9])(?=.*[a-zA-Z!@_#$%^&amp;*()\-+=,.?]).{6,16}$"
+                                       id="user_password" name="password" placeholder="密码不少于6位"
+                                       required="required" size="30" type="password">
+                                <a class="ui icon button">
+                                    <i class="eye icon"></i>
+                                    <i class="hide icon"></i>
+                                </a>
+                            </div>
+                            <div class="ui small inline loader"></div>
+                            <div class="check result" id="statu_user_password"></div>
+                            <div class="ui text error message"></div>
+                        </div>
+
+                        <div class="field inline">
+                            <label for="user_password2">确认密码</label>
+                            <div class="password action input">
+                                <input autocomplete="new-password"
+                                       data-password-regx="^(?=.*[0-9])(?=.*[a-zA-Z!@_#$%^&amp;*()\-+=,.?]).{6,16}$"
+                                       id="user_password2" name="password2" placeholder="密码不少于6位"
+                                       required="required" size="30" type="password">
+                                <a class="ui icon button">
+                                    <i class="eye icon"></i>
+                                    <i class="hide icon"></i>
+                                </a>
+                            </div>
+                            <div class="ui small inline loader"></div>
+                            <div class="check result" id="statu_user_password2"></div>
+                            <div class="ui text error message"></div>
+                        </div>
+
+                    </div>
+                    <br>
+                    <div class="field" id="git_osc_term_all">
+                        <div class="ui checkbox git-checkbox-accept-term">
+                            <input id="accept_term" name="accept_term" type="checkbox" value="0" tabindex="0"
+                                   class="hidden">
+                            <label>已阅读并同意</label>
+                        </div>
+                        <a href="#" target="_blank">使用条款</a>
+                        <div class="ui text error message"></div>
+                    </div>
+                    <div class="field inline">
+                        <label>
+                            &nbsp;&nbsp;&nbsp;
+                        </label>
+                        <button class="ui orange submit button register-btn-submit large" id="btn-submit"
+                                name="button" type="submit">注 册
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+</body>
+</html>

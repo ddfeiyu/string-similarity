@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <script src="../static/js/jquery-3.1.1.min.js"></script>
+    <link rel="stylesheet" href="/css/application.css"/>
+    <style>
+        .description {
+            float: left;
+        }
+
+        .ui.three.cards > .card {
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<nav>
+
+
+    <div th:if="${session.user!=null}">
+        <span th:text="${session.user.name}">用户姓名</span>
+        <!--<span th:text="${session.user}"></span>-->
+        <span><a th:href="@{ /user/logout(userId=${session.user.id})}">退出登录</a></span>
+    </div>
+    <div th:if="${! (session.user!=null)}">
+        <span><a th:href="@{ /user/login }">登录</a></span>
+        <span><a th:href="@{ /user/register }">注册</a></span>
+    </div>
+    <div id="recommendMovieContainer">
+
+    </div>
+
+</nav>
+<div id="movieInform" class="git-user-popular-projects ui container">
+    <div id="commonContainer" class="git-user-popular-projects">
+        <div> 分类栏目
+            <span id="cataLog" th:each="catalog : ${cataLogList}">
+                <a th:id="cataLog+(${catalog.id})" href="javascript:void(0);"
+                   th:href="@{/movie/movieByCataLog/{id}(id=${catalog.id})}" th:text="${catalog.name}">类名</a>
+            </span>
+            <input type="text" th:value="${'/movie/movieByCataLog/'+ cataLogList[0].id}"
+                   id="CommonMovieInformUrl"/><br/>
+            <div id="CommonMovieInform" class="git-user-popular-projects">
+
+                <div id="CommonContainerMovieList" class="ui three cards">
+                    <div th:each="movie: ${cataLogPageBean.content}" class="ui card fluid">
+                        <img th:src="${movie.imgUrl}" alt="电影图片"><br/>
+                        <div class="content main-content">
+                            <span>电影名称：</span><a href="javascript:void(0)"
+                                                 th:href="@{/movie/movieDetail/(movieId=${movie.id})}">
+                            <span th:text="${movie.title}"></span></a><br/>
+                            <span>类别：</span><span th:text="${movie.cataLog.name}"></span><br/>
+                            <span>上映日期：</span><span th:text="${movie.releaseDate}"></span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div id="commonMovieByCataLogPageContainer">
+
+                <span> <a href="javascript:void(0)" id="commonMovieByCataLogPageDescend">上一页</a></span>
+                单前第<input id="commonMovieByCurrentPageNum" th:value="${cataLogPageBean.Number}+1" type="number"/>
+                共<span id="commonMovieByCataLogTotalPages" th:text="${cataLogPageBean.totalPages}">0</span>页
+                <span>
+                        <a href="javascript:void(0)" id="commonMovieByTagPageIncrement">下一页</a>
+                 </span>
+            </div>
+        </div>
+    </div>
+    <hr/>
+
+    <div id="recommendContainer" class="git-user-popular-projects">
+        <div th:if="${recommendMovieListByTag!=null}">
+            <div id="recommendByTagsContainer" class="git-user-popular-projects">
+                <p>给您推荐</p>
+                <div id="recommendMovieListByTag" class="ui three cards">
+                    <div th:each="tagMovie: ${recommendMovieListByTag}" class="ui card fluid">
+                        <img th:src="${tagMovie.imgUrl}" alt="电影图片"><br/>
+                        <div class="content main-content">
+                            电影名称：<a href="javascript:void(0)"
+                                    th:href="@{/movie/movieDetail/(movieId=${tagMovie.id})}"><span
+                                th:text="${tagMovie.title}">东邪西毒</span></a><br/>
+                            类别：<span th:text="${tagMovie.cataLog.name}">科幻</span><br/>
+                            上映日期：<span th:text="${tagMovie.releaseDate}">2017.8.9</span><br/>
+                        </div>
+                    </div>
+
+                </div><br>
+                <button id="getNewByTag">换一组</button>
+            </div>
+        </div>
+        <hr/>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        $("#cataLog a").on("click", function () {
+            var href = $(this)[0].href;
+            alert("你点击了" + href);
+            $.ajax({
+                url: href,
+                type: 'POST',
+                data: "asyn=True",
+                success: function (data) {
+                    $("#CommonMovieInform").html(data);
+                    $("#CommonMovieInformUrl").val(href);
+                },
+                error: function () {
+                    alert("ajax请求失败");
+                }
+            });
+            return false;
+        });
+        $("#commonMovieByTagPageIncrement").on("click", function () {
+            var pageNum = $("#commonMovieByCurrentPageNum").val();
+            var totalPage = $("#commonMovieByCataLogTotalPages").text();
+            //var size=$("commonMovieByTagSize").val();
+            alert("当前页数" + pageNum + "总页数" + totalPage);
+            if (pageNum > totalPage - 1) {
+                alert("最后一页");
+                return false;
+            }
+
+            $.ajax({
+                url: $("#CommonMovieInformUrl").val(),
+                type: 'POST',
+                data: {
+                    "asyn": true,
+                    "page": pageNum
+                },
+                success: function (data) {
+                    $("#CommonMovieInform").html(data);
+                    pageNum++;
+                    $("#commonMovieByCurrentPageNum").val(pageNum);
+                },
+                error: function () {
+                    alert("ajax请求失败");
+                }
+            });
+            return false;
+
+        });
+
+        $("#commonMovieByCataLogPageDescend").on("click", function () {
+            var pageNum = $("#commonMovieByCurrentPageNum").val();
+            var totalPage = $("#commonMovieByCataLogTotalPages").text();
+            var size = $("commonMovieByTagSize").val();
+            alert("当前页数" + pageNum + "总页数" + totalPage);
+            pageNum--;
+            if ((pageNum - 1) < 0) {
+                alert("首页");
+                return false;
+            }
+            pageNum--;
+            $.ajax({
+                url: $("#CommonMovieInformUrl").val(),
+                type: 'POST',
+                data: {
+                    "asyn": true,
+                    "page": pageNum
+                },
+                success: function (data) {
+                    $("#CommonMovieInform").html(data);
+                    pageNum++;
+                    $("#commonMovieByCurrentPageNum").val(pageNum);
+                },
+                error: function () {
+                    alert("ajax请求失败");
+                }
+            });
+            return false;
+        });
+
+        $("#getNewByTag").on("click", function () {
+            alert("刷新标签推荐");
+            $.ajax({
+                url: "/recommend/recommenderBytag",
+                type: 'GET',
+                success: function (data) {
+                    $("#recommendMovieListByTag").html(data);
+                },
+                error: function () {
+                    alert("ajax请求失败");
+                }
+            });
+        });
+
+    });
+
+
+    /*
+    * 函数编辑区域
+    * */
+
+</script>
+</body>
+</html>

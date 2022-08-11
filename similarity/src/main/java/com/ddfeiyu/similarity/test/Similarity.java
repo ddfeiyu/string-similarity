@@ -1,5 +1,7 @@
 package com.ddfeiyu.similarity.test;
 
+import com.ddfeiyu.similarity.util.CosineSimilarity;
+
 public class Similarity {
 
 

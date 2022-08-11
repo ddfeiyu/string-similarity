@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/application.css"/>
+    <script src="/js/jquery-3.1.1.min.js"></script>
+    <style>
+        #showInformatiion {
+
+        }
+    </style>
+</head>
+<body>
+<nav>导航栏</nav>
+<div id="movieDetailContainer" class="git-user-popular-projects ui container">
+    <div id="movieDetail">
+        <div id="showInformatiion">
+            <div id="movie-pic" class="ui segment projects-container">
+                <img th:src="@{${movie.imgUrl}}" alt="电影图片" width="300" height="400"/><br/>
+                <input type="hidden" name="commonMovieUrl" th:value="${movie.id}" id="commonMovieUrl"/>
+
+                <div id="movie-info" class="ui">
+                    电影名称：<span th:text="${movie.title}"></span><br/>
+                    类别：<span th:text="${movie.cataLog.name}"></span><br/>
+                    电影详情：<span th:text="${movie.detail}"></span><br/>
+                    <span>观影地址：<a th:href="@{${movie.videoUrl}}" th:text="${movie.videoUrl}"></a></span><br/>
+                    电影标签：<span th:text="${movie.tags}"></span><br/>
+                </div>
+            </div>
+            <div th:if="${session.user !=null}">
+                <form id="commentForm" action="" th:action="@{/comment/addComment}" method="post">
+                    <input type="hidden" name="movieId" th:value="${movie.id}"/>
+                    <input type="hidden" name="userId" th:value="${session.user.id}">
+                    <div th:if="${ratingItemOfUser==null}">
+                        评分：<input type="number" name="rating" required="required" placeholder="请输入您的评分" min="1"
+                                  max="5"/><br/>
+                        评价：<textarea name="comment" placeholder="请输入您的评价"></textarea><br/>
+                    </div>
+                    <!---->
+                    <div th:if="${ratingItemOfUser!=null}">
+                        评分：<input type="number" th:value="${ratingItemOfUser.rating}" name="rating" required="required"
+                                  placeholder="请输入您的评分" min="1" max="5"/><br/>
+                        评价：<textarea name="comment" th:text=${ratingItemOfUser.comment}
+                                     placeholder="请输入您的评价"></textarea><br/>
+                    </div>
+
+                    <input id="addComment" type="submit" value="确定评价"/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="ratingListContentContainer">
+    <div id="ratingListContent">
+        <div th:each="ratingItem : ${ratingItemPageBean}">
+            <span th:text="${ratingItem.user.name}">用户姓名</span>
+            评分： <span th:text="${ratingItem.rating}">用户评分</span><br/>
+            <p th:text="${ratingItem.comment}">用户评价</p>
+            <span th:text="${ratingItem.commentDate}">发表时间</span>
+        </div>
+
+    </div>
+
+
+</div>
+
+<div id="itemRatingPageContainer">
+
+    <span> <a href="javascript:void(0)" id="itemRatingDescend">上一页</a></span>
+    单前第<input id="itemRatingByCurrentPageNum" th:value="${ratingItemPageBean.Number}+1" type="number"/>
+    共<span id="itemRatingTotalPages" th:text="${ratingItemPageBean.totalPages}">0</span>页
+    <span>
+                        <a href="javascript:void(0)" id="itemRatingIncrement">下一页</a>
+                 </span>
+</div>
+<script>
+    $(document).ready(function () {
+
+        $("#commentForm").submit(function (e) {
+            e.preventDefault();
+            var url = $("#commentForm").attr("action");
+            var subdata = $("#commentForm").serialize();
+            alert(subdata);
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: subdata,
+                success: function (data) {
+                    $("#ratingListContentContainer").html(data);
+
+                },
+                error: function () {
+                    alert("ajax请求失败");
+                }
+            });
+
+        });
+        $("#itemRatingIncrement").on("click", function () {
+            var pageNum = $("#itemRatingByCurrentPageNum").val();
+            var totalPage = $("#itemRatingTotalPages").text();
+            var movieId = $("#commonMovieUrl").val();
+            //var size=$("commonMovieByTagSize").val();
+            alert("当前页数" + pageNum + "总页数" + totalPage);
+            if (pageNum > totalPage - 1) {
+                alert("最后一页");
+                return false;
+            }
+
+            $.ajax({
+                url: "/movie/movieDetail",
+                type: 'GET',
+                data: {
+                    "asyn": true,
+                    "page": pageNum,
+                    "movieId": movieId,
+                },
+                success: function (data) {
+                    $("#ratingListContentContainer").html(data);
+                    pageNum++;
+                    $("#itemRatingByCurrentPageNum").val(pageNum);
+                },
+                error: function () {
+                    alert("ajax请求失败");
+                }
+            });
+            return false;
+
+        });
+
+        $("#itemRatingDescend").on("click", function () {
+            var pageNum = $("#itemRatingByCurrentPageNum").val();
+            var totalPage = $("#itemRatingTotalPages").text();
+            var movieId = $("#commonMovieUrl").val();
+            pageNum--;
+            alert("当前页数" + pageNum + "总页数" + totalPage);
+            if ((pageNum - 1) < 0) {
+                alert("首页");
+                return false;
+            }
+            pageNum--;
+            $.ajax({
+                url: "/movie/movieDetail",
+                type: 'GET',
+                data: {
+                    "asyn": true,
+                    "page": pageNum,
+                    "movieId": movieId,
+                },
+                success: function (data) {
+                    $("#ratingListContentContainer").html(data);
+                    alert(data);
+                    pageNum++;
+                    $("#itemRatingByCurrentPageNum").val(pageNum);
+                },
+                error: function () {
+                    alert("ajax请求失败");
+                }
+            });
+            return false
+        });
+    });
+
+</script>
+</body>
+</html>
